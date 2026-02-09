@@ -2412,184 +2412,307 @@ getgenv().Loaded = true
             return setmetatable(Cfg, Library)
         end
 
-        function Library:Keybind(properties) 
-            local Cfg = {
-                Flag = properties.Flag or properties.Name;
-                Callback = properties.Callback or function() end;
-                Name = properties.Name or nil; 
+function Library:Keybind(properties) 
+    local Cfg = {
+        Flag = properties.Flag or properties.Name;
+        Callback = properties.Callback or function() end;
+        Name = properties.Name or nil; 
 
-                Key = properties.Key or nil;
-                Mode = properties.Mode or "Toggle";
-                Active = properties.Default or false; 
-                
-                Show = properties.ShowInList or true;
+        Key = properties.Key or nil;
+        Mode = properties.Mode or "Toggle";
+        Active = properties.Default or false; 
+        
+        Show = properties.ShowInList or true;
 
-                Open = false;
-                Binding;
-                Ignore = false;
+        Open = false;
+        Binding;
+        Ignore = false;
 
-                Items = {}
-            }
+        Items = {}
+    }
 
-            Flags[Cfg.Flag] = {
-                Mode = Cfg.Mode,
-                Key = Cfg.Key, 
-                Active = Cfg.Active
-            }
+    Flags[Cfg.Flag] = {
+        Mode = Cfg.Mode,
+        Key = Cfg.Key, 
+        Active = Cfg.Active
+    }
 
-            local Items = Cfg.Items; do 
-                -- Component
-                    Items.Keybind = Library:Create( "TextButton" , {
-                        Parent = Items.game.StarterGui.Skeet.Main.Window.Inline.Hollow.Inline.InnerPage.PageHolder.Page.Page.Column.Outline.Inline.Background.Holder.Elements.Dropdown.Components;
-                        FontFace = Font.new("rbxassetid://12187371840", Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-                        Name = "\0";
-                        TextColor3 = rgb(111, 111, 111);
-                        BorderColor3 = rgb(0, 0, 0);
-                        Text = "[T]";
-                        AutomaticSize = Enum.AutomaticSize.XY;
-                        Selectable = false;
-                        AnchorPoint = vec2(0.5, 0);
-                        BorderSizePixel = 0;
-                        BackgroundTransparency = 1;
-                        Position = dim2(1, 0, 0.10000000149011612, 0);
-                        Active = false;
-                        ZIndex = 2;
-                        TextSize = 9;
-                        BackgroundColor3 = rgb(255, 255, 255)
-                    });
-                    
-                    Library:Create( "UIStroke" , {
-                        Color = rgb(20, 20, 20);
-                        LineJoinMode = Enum.LineJoinMode.Miter;
-                        Parent = Items.Keybind
-                    });
-                -- 
-                
-                -- Mode Holder
-                    Items.KeybindOutline = Library:Create( "Frame" , {
-                        Parent = Library.Items;
-                        Visible = false;
-                        Size = dim2(0, 100, 0, 22);
-                        Name = "\0";
-                        Position = dim2(0.8264937996864319, 0, 0.33450964093208313, 0);
-                        BorderColor3 = rgb(0, 0, 0);
-                        BorderSizePixel = 0;
-                        AutomaticSize = Enum.AutomaticSize.Y;
-                        BackgroundColor3 = rgb(12, 12, 12)
-                    });
+    local Items = Cfg.Items; do 
+        -- Component
+            Items.Keybind = Library:Create( "TextButton" , {
+                Parent = self.Items.Components;
+                FontFace = Font.new("rbxassetid://12187371840", Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+                Name = "\0";
+                TextColor3 = rgb(111, 111, 111);
+                BorderColor3 = rgb(0, 0, 0);
+                Text = "[NONE]";
+                AutomaticSize = Enum.AutomaticSize.XY;
+                Selectable = false;
+                AnchorPoint = vec2(0.5, 0);
+                BorderSizePixel = 0;
+                BackgroundTransparency = 1;
+                Position = dim2(1, 0, 0.5, 0);
+                Active = false;
+                ZIndex = 2;
+                TextSize = 9;
+                BackgroundColor3 = rgb(255, 255, 255)
+            });
+            
+            Library:Create( "UIStroke" , {
+                Color = rgb(20, 20, 20);
+                LineJoinMode = Enum.LineJoinMode.Miter;
+                Parent = Items.Keybind
+            });
+        -- 
+        
+        -- Mode Holder
+            Items.ModeHolder = Library:Create( "Frame" , {
+                Parent = Library.Items;
+                Visible = false;
+                Size = dim2(0, 100, 0, 22);
+                Name = "\0";
+                Position = dim2(0, 0, 0, 0);
+                BorderColor3 = rgb(0, 0, 0);
+                BorderSizePixel = 0;
+                AutomaticSize = Enum.AutomaticSize.Y;
+                BackgroundColor3 = rgb(12, 12, 12)
+            });
 
-                    Items.Inline = Library:Create( "Frame" , {
-                        Parent = Items.KeybindOutline;
-                        Name = "\0";
-                        Position = dim2(0, 1, 0, 1);
-                        BorderColor3 = rgb(0, 0, 0);
-                        Size = dim2(1, -2, 1, -2);
-                        BorderSizePixel = 0;
-                        BackgroundColor3 = rgb(35, 35, 35)
-                    });
-                    
-                    Library:Create( "UIListLayout" , {
-                        Parent = Items.Inline;
-                        SortOrder = Enum.SortOrder.LayoutOrder
-                    });
-                    
-                    Items.Toggle = Library:Create( "TextButton" , {
-                        FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-                        TextColor3 = rgb(205, 205, 205);
-                        BorderColor3 = rgb(0, 0, 0);
-                        Text = "Toggle";
-                        Parent = Items.Inline;
-                        ClipsDescendants = true;
-                        AutomaticSize = Enum.AutomaticSize.Y;
-                        Size = dim2(1, 0, 0, 0);
-                        Name = "\0";
-                        TextXAlignment = Enum.TextXAlignment.Left;
-                        BorderSizePixel = 0;
-                        ZIndex = 2;
-                        TextSize = 13;
-                        BackgroundColor3 = rgb(26, 26, 26)
-                    });
-                    
-                    Library:Create( "UIPadding" , {
-                        PaddingTop = dim(0, 5);
-                        PaddingBottom = dim(0, 5);
-                        Parent = Items.Toggle;
-                        PaddingRight = dim(0, 5);
-                        PaddingLeft = dim(0, 5)
-                    });
-                    
-                    Items.Hold = Library:Create( "TextButton" , {
-                        FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-                        TextColor3 = rgb(205, 205, 205);
-                        BorderColor3 = rgb(0, 0, 0);
-                        Text = "Hold";
-                        Parent = Items.Inline;
-                        ClipsDescendants = true;
-                        AutomaticSize = Enum.AutomaticSize.Y;
-                        Size = dim2(1, 0, 0, 0);
-                        Name = "\0";
-                        TextXAlignment = Enum.TextXAlignment.Left;
-                        BorderSizePixel = 0;
-                        ZIndex = 2;
-                        TextSize = 13;
-                        BackgroundColor3 = rgb(26, 26, 26)
-                    });
-                    
-                    Library:Create( "UIPadding" , {
-                        PaddingTop = dim(0, 5);
-                        PaddingBottom = dim(0, 5);
-                        Parent = Items.Hold;
-                        PaddingRight = dim(0, 5);
-                        PaddingLeft = dim(0, 5)
-                    });
-                    
-                    Items.Always = Library:Create( "TextButton" , {
-                        FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal);
-                        Parent = Items.Inline;
-                        TextColor3 = rgb(142, 181, 39);
-                        BorderColor3 = rgb(0, 0, 0);
-                        Text = "Always";
-                        Name = "\0";
-                        AutomaticSize = Enum.AutomaticSize.Y;
-                        Size = dim2(1, 0, 0, 0);
-                        ClipsDescendants = true;
-                        BackgroundTransparency = 1;
-                        TextXAlignment = Enum.TextXAlignment.Left;
-                        BorderSizePixel = 0;
-                        ZIndex = 2;
-                        TextSize = 13;
-                        BackgroundColor3 = rgb(255, 255, 255)
-                    });
-                    
-                    Library:Create( "UIPadding" , {
-                        PaddingTop = dim(0, 5);
-                        PaddingBottom = dim(0, 5);
-                        Parent = Items.Always;
-                        PaddingRight = dim(0, 5);
-                        PaddingLeft = dim(0, 5)
-                    });
+            Items.Inline = Library:Create( "Frame" , {
+                Parent = Items.ModeHolder;
+                Name = "\0";
+                Position = dim2(0, 1, 0, 1);
+                BorderColor3 = rgb(0, 0, 0);
+                Size = dim2(1, -2, 1, -2);
+                BorderSizePixel = 0;
+                BackgroundColor3 = rgb(35, 35, 35)
+            });
+            
+            Library:Create( "UIListLayout" , {
+                Parent = Items.Inline;
+                SortOrder = Enum.SortOrder.LayoutOrder
+            });
+            
+            Items.Toggle = Library:Create( "TextButton" , {
+                FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+                TextColor3 = rgb(205, 205, 205);
+                BorderColor3 = rgb(0, 0, 0);
+                Text = "Toggle";
+                Parent = Items.Inline;
+                ClipsDescendants = true;
+                AutomaticSize = Enum.AutomaticSize.Y;
+                Size = dim2(1, 0, 0, 0);
+                Name = "\0";
+                TextXAlignment = Enum.TextXAlignment.Left;
+                BorderSizePixel = 0;
+                ZIndex = 2;
+                TextSize = 13;
+                BackgroundColor3 = rgb(26, 26, 26)
+            });
+            
+            Library:Create( "UIPadding" , {
+                PaddingTop = dim(0, 5);
+                PaddingBottom = dim(0, 5);
+                Parent = Items.Toggle;
+                PaddingRight = dim(0, 5);
+                PaddingLeft = dim(0, 5)
+            });
+            
+            Items.Hold = Library:Create( "TextButton" , {
+                FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+                TextColor3 = rgb(205, 205, 205);
+                BorderColor3 = rgb(0, 0, 0);
+                Text = "Hold";
+                Parent = Items.Inline;
+                ClipsDescendants = true;
+                AutomaticSize = Enum.AutomaticSize.Y;
+                Size = dim2(1, 0, 0, 0);
+                Name = "\0";
+                TextXAlignment = Enum.TextXAlignment.Left;
+                BorderSizePixel = 0;
+                ZIndex = 2;
+                TextSize = 13;
+                BackgroundColor3 = rgb(26, 26, 26)
+            });
+            
+            Library:Create( "UIPadding" , {
+                PaddingTop = dim(0, 5);
+                PaddingBottom = dim(0, 5);
+                Parent = Items.Hold;
+                PaddingRight = dim(0, 5);
+                PaddingLeft = dim(0, 5)
+            });
+            
+            Items.Always = Library:Create( "TextButton" , {
+                FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal);
+                Parent = Items.Inline;
+                TextColor3 = rgb(142, 181, 39);
+                BorderColor3 = rgb(0, 0, 0);
+                Text = "Always";
+                Name = "\0";
+                AutomaticSize = Enum.AutomaticSize.Y;
+                Size = dim2(1, 0, 0, 0);
+                ClipsDescendants = true;
+                BackgroundTransparency = 1;
+                TextXAlignment = Enum.TextXAlignment.Left;
+                BorderSizePixel = 0;
+                ZIndex = 2;
+                TextSize = 13;
+                BackgroundColor3 = rgb(255, 255, 255)
+            });
+            
+            Library:Create( "UIPadding" , {
+                PaddingTop = dim(0, 5);
+                PaddingBottom = dim(0, 5);
+                Parent = Items.Always;
+                PaddingRight = dim(0, 5);
+                PaddingLeft = dim(0, 5)
+            });
 
-                    for _,mode in {"Always", "Toggle", "Hold"} do 
-                        Items[mode].TextColor3 = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-                        Items[mode].BackgroundTransparency = 0;
-                        Items[mode].TextColor3 = rgb(205, 205, 205)
+            for _,mode in {"Always", "Toggle", "Hold"} do 
+                Items[mode].FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+                Items[mode].BackgroundTransparency = 0;
+                Items[mode].TextColor3 = rgb(205, 205, 205)
 
-                        Items[mode].MouseButton1Click:Connect(function()
-                            for _,extra in {"Always", "Toggle", "Hold"} do
-                                Items[extra].TextColor3 = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-                                Items[extra].BackgroundTransparency = 0;
-                                Items[extra].TextColor3 = rgb(205, 205, 205)
-                            end 
-
-                            Items[mode].TextColor3 = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
-                            Items[mode].BackgroundTransparency = 1;
-                            Items[mode].TextColor3 = themes.preset.accent
-
-                            Cfg.Set(mode)
-                        end)
+                Items[mode].MouseButton1Click:Connect(function()
+                    for _,extra in {"Always", "Toggle", "Hold"} do
+                        Items[extra].FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
+                        Items[extra].BackgroundTransparency = 0;
+                        Items[extra].TextColor3 = rgb(205, 205, 205)
                     end 
-                --
+
+                    Items[mode].FontFace = Font.new("rbxasset://fonts/families/SourceSansPro.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+                    Items[mode].BackgroundTransparency = 1;
+                    Items[mode].TextColor3 = themes.preset.accent
+
+                    Cfg.SetMode(mode)
+                end)
             end 
+        --
+    end 
+
+    function Cfg.SetMode(mode) 
+        Cfg.Mode = mode 
+
+        if mode == "Always" then
+            Cfg.Set(true)
+        elseif mode == "Hold" then
+            Cfg.Set(false)
+        end
+
+        Flags[Cfg.Flag].Mode = mode
+    end
+
+    function Cfg.Set(input)
+        if type(input) == "boolean" then 
+            Cfg.Active = input
+
+            if Cfg.Mode == "Always" then 
+                Cfg.Active = true
+            end
+        elseif tostring(input):find("Enum") then 
+            input = input.Name == "Escape" and "NONE" or input
+            
+            Cfg.Key = input or "NONE"	
+        elseif table.find({"Toggle", "Hold", "Always"}, input) then 
+            if input == "Always" then 
+                Cfg.Active = true 
+            end 
+
+            Cfg.Mode = input
+            Cfg.SetMode(Cfg.Mode) 
+        elseif type(input) == "table" then
+            input.Key = type(input.Key) == "string" and input.Key ~= "NONE" and Library:ConvertEnum(input.key) or input.Key
+            input.Key = input.Key == Enum.KeyCode.Escape and "NONE" or input.Key
+
+            Cfg.Key = input.Key or "NONE"
+            Cfg.Mode = input.Mode or "Toggle"
+
+            if input.Active then
+                Cfg.Active = input.Active
+            end
+
+            Cfg.SetMode(Cfg.Mode) 
+        end 
+
+        Cfg.Callback(Cfg.Active)
+
+        local text = (tostring(Cfg.Key) ~= "Enums" and (Keys[Cfg.Key] or tostring(Cfg.Key):gsub("Enum.", "")) or nil)
+        local __text = text and tostring(text):gsub("KeyCode.", ""):gsub("UserInputType.", "")
+
+        Items.Keybind.Text = "[" .. (__text or "NONE") .. "]"
+
+        Flags[Cfg.Flag] = {
+            mode = Cfg.Mode,
+            key = Cfg.Key, 
+            active = Cfg.Active
+        }
+    end
+    
+    function Cfg.SetVisible(bool)
+        Items.ModeHolder.Visible = bool 
+        Items.ModeHolder.Position = dim2(0, Items.Keybind.AbsolutePosition.X, 0, Items.Keybind.AbsolutePosition.Y + 20)
+    end
+
+    Items.Keybind.MouseButton1Down:Connect(function()
+        task.wait()
+        Items.Keybind.Text = "[...]"	
+
+        Cfg.Binding = Library:Connection(InputService.InputBegan, function(keycode, game_event)  
+            Cfg.Set(keycode.KeyCode ~= Enum.KeyCode.Unknown and keycode.KeyCode or keycode.UserInputType)
+            
+            Cfg.Binding:Disconnect() 
+            Cfg.Binding = nil
+        end)
+    end)
+
+    Items.Keybind.MouseButton2Down:Connect(function()
+        Cfg.Open = not Cfg.Open 
+
+        Cfg.SetVisible(Cfg.Open)
+    end)
+
+    Library:Connection(InputService.InputBegan, function(input, game_event) 
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if not Library:Hovering({Items.Keybind, Items.ModeHolder}) then 
+                Cfg.SetVisible(false)
+                Cfg.Open = false;
+            end 
+        end 
+        
+        if not game_event then
+            local selected_key = input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode or input.UserInputType
+
+            if selected_key == Cfg.Key then 
+                if Cfg.Mode == "Toggle" then 
+                    Cfg.Active = not Cfg.Active
+                    Cfg.Set(Cfg.Active)
+                elseif Cfg.Mode == "Hold" then 
+                    Cfg.Set(true)
+                end
+            end
+        end
+    end)    
+
+    Library:Connection(InputService.InputEnded, function(input, game_event) 
+        if game_event then 
+            return 
+        end 
+
+        local selected_key = input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode or input.UserInputType
+
+        if selected_key == Cfg.Key then
+            if Cfg.Mode == "Hold" then 
+                Cfg.Set(false)
+            end
+        end
+    end)
+    
+    Cfg.Set({Mode = Cfg.Mode, Active = Cfg.Active, Key = Cfg.Key})           
+    ConfigFlags[Cfg.Flag] = Cfg.Set
+
+    return setmetatable(Cfg, Library)
+end
 
             function Cfg.SetMode(mode) 
                 Cfg.Mode = mode 
